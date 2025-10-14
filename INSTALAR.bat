@@ -95,11 +95,13 @@ if errorlevel 1 (
     if "%ffmpeg_choice%"=="1" (
         echo.
         echo Executando instalador FFmpeg...
-        if exist "INSTALAR_FFMPEG.bat" (
+        if exist "INSTALAR_FFMPEG_FINAL.bat" (
+            call INSTALAR_FFMPEG_FINAL.bat
+        ) else if exist "INSTALAR_FFMPEG.bat" (
             call INSTALAR_FFMPEG.bat
         ) else (
-            echo ERRO: INSTALAR_FFMPEG.bat nao encontrado!
-            echo Execute o instalador manualmente.
+            echo ERRO: Instalador FFmpeg nao encontrado!
+            echo Execute os comandos em COMANDOS_RAPIDOS.txt
         )
     ) else if "%ffmpeg_choice%"=="3" (
         echo.
