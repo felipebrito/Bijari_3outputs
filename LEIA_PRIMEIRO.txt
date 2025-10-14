@@ -8,8 +8,8 @@
 - Funciona 24/7 sem intervenção
 
 📁 ARQUIVOS PRINCIPAIS:
-- INSTALAR.bat - Instala tudo (só uma vez)
-- INICIAR_PRODUCAO.bat - Usa o sistema
+- INSTALAR.bat - Instala dependências Python
+- INICIAR_PRODUCAO.bat - Usa o sistema (baixa FFmpeg automaticamente)
 - CONFIGURAR.bat - Configura e testa
 - COMO_USAR.txt - Instruções detalhadas
 
@@ -30,6 +30,7 @@
 - Coloque os vídeos: Tela01.mp4, Tela02.mp4, Tela03.mp4
 - Configure 3 monitores de 1920x1080 lado a lado
 - Instale Python e VLC (o instalador ajuda)
+- ✅ FFmpeg é baixado automaticamente quando necessário!
 
 ❓ PROBLEMAS:
 - Execute "CONFIGURAR.bat" para diagnosticar

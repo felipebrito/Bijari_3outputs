@@ -78,8 +78,9 @@ def setup_global_hotkey():
 
 def find_ffmpeg():
     """Encontra o FFmpeg no sistema."""
-    # Caminhos possíveis para o FFmpeg
+    # Caminhos possíveis para o FFmpeg (prioridade para pasta local)
     possible_paths = [
+        "ffmpeg.exe",  # Na pasta do projeto (prioridade máxima)
         "ffmpeg",  # No PATH
         r"C:\ffmpeg\bin\ffmpeg.exe",
         r"C:\Program Files\ffmpeg\bin\ffmpeg.exe",
@@ -93,7 +94,52 @@ def find_ffmpeg():
             print(f"✓ FFmpeg encontrado: {path}")
             return path
     
+    # Se não encontrou, tenta baixar automaticamente
+    print("FFmpeg não encontrado. Tentando baixar automaticamente...")
+    if download_ffmpeg():
+        if os.path.exists("ffmpeg.exe"):
+            print("✓ FFmpeg baixado com sucesso!")
+            return "ffmpeg.exe"
+    
     return None
+
+
+def download_ffmpeg():
+    """Baixa o FFmpeg automaticamente."""
+    try:
+        print("Baixando FFmpeg...")
+        import urllib.request
+        
+        # URL do FFmpeg
+        url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
+        
+        # Baixa o arquivo
+        urllib.request.urlretrieve(url, "ffmpeg.zip")
+        
+        # Extrai o arquivo
+        import zipfile
+        with zipfile.ZipFile("ffmpeg.zip", 'r') as zip_ref:
+            zip_ref.extractall(".")
+        
+        # Move os executáveis
+        for root, dirs, files in os.walk("ffmpeg-master-latest-win64-gpl"):
+            if "bin" in root:
+                for file in files:
+                    if file in ["ffmpeg.exe", "ffprobe.exe"]:
+                        src = os.path.join(root, file)
+                        dst = file
+                        shutil.copy2(src, dst)
+                        print(f"✓ {file} copiado!")
+        
+        # Limpa arquivos temporários
+        os.remove("ffmpeg.zip")
+        shutil.rmtree("ffmpeg-master-latest-win64-gpl")
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERRO ao baixar FFmpeg: {e}")
+        return False
 
 
 def combine_videos():
