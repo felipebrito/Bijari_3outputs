@@ -97,8 +97,13 @@ if exist "ffmpeg.exe" (
         
         if "%ffmpeg_choice%"=="1" (
             echo.
-            echo FFmpeg sera baixado automaticamente quando necessario.
-            echo Execute INICIAR_PRODUCAO.bat para usar o sistema.
+            echo Copiando FFmpeg para a pasta do projeto...
+            if exist "COPIAR_FFMPEG.bat" (
+                call COPIAR_FFMPEG.bat
+            ) else (
+                echo ERRO: COPIAR_FFMPEG.bat nao encontrado!
+                echo FFmpeg sera baixado automaticamente quando necessario.
+            )
         ) else if "%ffmpeg_choice%"=="3" (
             echo.
             echo INSTRUCOES MANUAIS:
