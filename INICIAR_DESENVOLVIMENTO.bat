@@ -8,7 +8,6 @@ echo Sistema de desenvolvimento
 echo Pressione Ctrl+Q para sair
 echo.
 
-cd development
 python video_sync.py
 
 pause

@@ -8,7 +8,6 @@ echo Sistema de producao com reinicializacao automatica
 echo Pressione Ctrl+C para sair
 echo.
 
-cd production
 python kiosk_launcher.py
 
 pause
