@@ -225,6 +225,33 @@ def combine_videos():
                 "-y",
                 OUTPUT_VIDEO
             ]
+        },
+        # Abordagem 4: Ultra simples (sem codec específico)
+        {
+            "name": "Ultra simples",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-i", INPUT_VIDEOS[1], 
+                "-i", INPUT_VIDEOS[2],
+                "-filter_complex", 
+                "hstack=inputs=3",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        },
+        # Abordagem 5: Apenas 2 vídeos primeiro
+        {
+            "name": "Apenas 2 vídeos",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-i", INPUT_VIDEOS[1],
+                "-filter_complex", 
+                "hstack=inputs=2",
+                "-y",
+                OUTPUT_VIDEO
+            ]
         }
     ]
     
@@ -235,9 +262,21 @@ def combine_videos():
         result = subprocess.run(approach['cmd'], capture_output=True, text=True)
         
         if result.returncode == 0:
-            print(f"✓ Vídeos combinados com sucesso usando {approach['name']}!")
-            print(f"Arquivo gerado: {OUTPUT_VIDEO}")
-            return True
+            # Verifica se o arquivo foi realmente criado
+            if os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
+                print(f"✓ Vídeos combinados com sucesso usando {approach['name']}!")
+                print(f"Arquivo gerado: {OUTPUT_VIDEO}")
+                file_size = os.path.getsize(OUTPUT_VIDEO)
+                print(f"Tamanho: {file_size / (1024*1024):.2f} MB")
+                return True
+            else:
+                print(f"✗ FFmpeg retornou sucesso mas arquivo não foi criado!")
+                print(f"Verificando se {OUTPUT_VIDEO} existe...")
+                if os.path.exists(OUTPUT_VIDEO):
+                    print(f"Arquivo existe mas está vazio (tamanho: {os.path.getsize(OUTPUT_VIDEO)} bytes)")
+                else:
+                    print(f"Arquivo não existe")
+                continue  # Tenta próxima abordagem
         else:
             print(f"✗ Falha com {approach['name']}")
             print(f"Código de erro: {result.returncode}")
