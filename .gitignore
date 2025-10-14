@@ -44,3 +44,5 @@ combined_video.mp4
 
 # Logs
 *.log
+kiosk.log
+bijari_service.log

@@ -53,6 +53,7 @@ Bijari_3outputs/
 
 ## 🎬 Como Usar
 
+### **Modo Desenvolvimento**
 1. **Prepare os vídeos:**
    - Coloque `Tela01.mp4`, `Tela02.mp4` e `Tela03.mp4` na pasta do projeto
    - Vídeos devem ter resolução 1080x1920 (portrait/vertical)
@@ -72,6 +73,32 @@ python video_sync.py
 
 4. **Para sair:**
    - Pressione `Ctrl+Q` de qualquer lugar (funciona globalmente)
+
+### **Modo Produção (Kiosk)**
+Para ambiente de produção com reinicialização automática:
+
+#### **Opção 1: PowerShell (Recomendado)**
+```powershell
+# Execute como administrador
+.\start_kiosk.ps1 -RunAsAdmin
+```
+
+#### **Opção 2: Serviço Windows (Máxima robustez)**
+```bash
+# Instala o serviço
+python install_service.py install
+
+# Inicia o serviço
+python install_service.py start
+```
+
+#### **Opção 3: Launcher Python**
+```bash
+# Launcher com monitoramento
+python kiosk_launcher.py
+```
+
+📖 **Guia completo de produção:** [PRODUCTION_GUIDE.md](PRODUCTION_GUIDE.md)
 
 ## ⚙️ Configuração
 
