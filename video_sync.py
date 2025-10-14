@@ -184,12 +184,26 @@ def combine_videos():
     ]
     
     print("Executando FFmpeg...")
+    print(f"Comando: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
+    
     if result.returncode == 0:
         print(f"✓ Vídeos combinados com sucesso! ({VIDEO_WIDTH}x{VIDEO_HEIGHT})")
         return True
     else:
-        print(f"ERRO ao combinar vídeos: {result.stderr}")
+        print(f"ERRO ao combinar vídeos!")
+        print(f"Código de erro: {result.returncode}")
+        print(f"Erro: {result.stderr}")
+        print(f"Saída: {result.stdout}")
+        
+        # Verifica se os vídeos de entrada existem
+        print("\nVerificando vídeos de entrada:")
+        for i, video in enumerate(INPUT_VIDEOS):
+            if os.path.exists(video):
+                print(f"✓ {video} encontrado")
+            else:
+                print(f"✗ {video} NÃO encontrado!")
+        
         return False
 
 def main():
