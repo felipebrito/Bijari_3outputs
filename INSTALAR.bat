@@ -85,14 +85,36 @@ ffmpeg -version >nul 2>&1
 if errorlevel 1 (
     echo AVISO: FFmpeg nao encontrado!
     echo.
-    echo INSTRUCOES:
-    echo 1. Baixe FFmpeg em: https://ffmpeg.org/download.html
-    echo 2. Extraia para C:\ffmpeg\
-    echo 3. Adicione C:\ffmpeg\bin\ ao PATH do sistema
-    echo 4. Ou coloque ffmpeg.exe na pasta do projeto
+    echo OPCOES:
+    echo 1. Instalar automaticamente (recomendado)
+    echo 2. Continuar sem FFmpeg
+    echo 3. Instrucoes manuais
     echo.
-    echo CONTINUANDO SEM FFmpeg...
-    echo (O sistema tentara encontrar automaticamente)
+    set /p ffmpeg_choice="Digite sua opcao (1-3): "
+    
+    if "%ffmpeg_choice%"=="1" (
+        echo.
+        echo Executando instalador FFmpeg...
+        if exist "INSTALAR_FFMPEG.bat" (
+            call INSTALAR_FFMPEG.bat
+        ) else (
+            echo ERRO: INSTALAR_FFMPEG.bat nao encontrado!
+            echo Execute o instalador manualmente.
+        )
+    ) else if "%ffmpeg_choice%"=="3" (
+        echo.
+        echo INSTRUCOES MANUAIS:
+        echo 1. Baixe FFmpeg em: https://ffmpeg.org/download.html
+        echo 2. Extraia para C:\ffmpeg\
+        echo 3. Adicione C:\ffmpeg\bin\ ao PATH do sistema
+        echo 4. Ou coloque ffmpeg.exe na pasta do projeto
+        echo 5. Ou execute: choco install ffmpeg -y
+        echo.
+        pause
+    ) else (
+        echo CONTINUANDO SEM FFmpeg...
+        echo (O sistema tentara encontrar automaticamente)
+    )
     echo.
 ) else (
     echo ✓ FFmpeg encontrado!

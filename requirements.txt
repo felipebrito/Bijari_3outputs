@@ -1,3 +1,13 @@
+# Dependências Python
 keyboard==0.13.5
 pywin32==311
 psutil==5.9.0
+
+# PRÉ-REQUISITOS EXTERNOS (não instaláveis via pip):
+# - VLC Media Player: https://www.videolan.org/vlc/
+# - FFmpeg: Execute INSTALAR_FFMPEG.bat ou siga INSTALAR_FFMPEG_INSTRUCOES.txt
+# - Python 3.8+: https://www.python.org/downloads/
+
+# INSTALAÇÃO RÁPIDA DO FFMPEG:
+# PowerShell como Admin: choco install ffmpeg -y
+# Ou execute: INSTALAR_FFMPEG.bat
