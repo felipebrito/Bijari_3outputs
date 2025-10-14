@@ -165,46 +165,96 @@ def combine_videos():
             print(f"ERRO: {video} não encontrado!")
             return False
     
-    cmd = [
-        ffmpeg_path,
-        "-i", INPUT_VIDEOS[0],
-        "-i", INPUT_VIDEOS[1], 
-        "-i", INPUT_VIDEOS[2],
-        "-filter_complex", 
-        f"[0:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"  # Girar 90° e redimensionar Tela01
-        f"[1:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"  # Girar 90° e redimensionar Tela02
-        f"[2:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"  # Girar 90° e redimensionar Tela03
-        "[v0][v1][v2]hstack=inputs=3[v]",        # Combinar lado a lado
-        "-map", "[v]",
-        "-c:v", "libx264",
-        "-preset", "fast",
-        "-crf", "23",
-        "-y",  # Sobrescrever arquivo se existir
-        OUTPUT_VIDEO
+    # Tenta diferentes abordagens para evitar erro de memória
+    approaches = [
+        # Abordagem 1: Comando original
+        {
+            "name": "Comando original",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-i", INPUT_VIDEOS[1], 
+                "-i", INPUT_VIDEOS[2],
+                "-filter_complex", 
+                f"[0:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
+                f"[1:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
+                f"[2:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
+                "[v0][v1][v2]hstack=inputs=3[v]",
+                "-map", "[v]",
+                "-c:v", "libx264",
+                "-preset", "fast",
+                "-crf", "23",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        },
+        # Abordagem 2: Sem rotação (mais simples)
+        {
+            "name": "Sem rotação",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-i", INPUT_VIDEOS[1], 
+                "-i", INPUT_VIDEOS[2],
+                "-filter_complex", 
+                f"[0:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
+                f"[1:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
+                f"[2:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
+                "[v0][v1][v2]hstack=inputs=3[v]",
+                "-map", "[v]",
+                "-c:v", "libx264",
+                "-preset", "ultrafast",
+                "-crf", "28",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        },
+        # Abordagem 3: Mais simples ainda
+        {
+            "name": "Comando simplificado",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-i", INPUT_VIDEOS[1], 
+                "-i", INPUT_VIDEOS[2],
+                "-filter_complex", 
+                "[0:v][1:v][2:v]hstack=inputs=3[v]",
+                "-map", "[v]",
+                "-c:v", "libx264",
+                "-preset", "ultrafast",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        }
     ]
     
-    print("Executando FFmpeg...")
-    print(f"Comando: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    for i, approach in enumerate(approaches, 1):
+        print(f"\nTentativa {i}: {approach['name']}")
+        print(f"Comando: {' '.join(approach['cmd'])}")
+        
+        result = subprocess.run(approach['cmd'], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print(f"✓ Vídeos combinados com sucesso usando {approach['name']}!")
+            print(f"Arquivo gerado: {OUTPUT_VIDEO}")
+            return True
+        else:
+            print(f"✗ Falha com {approach['name']}")
+            print(f"Código de erro: {result.returncode}")
+            if result.stderr:
+                print(f"Erro: {result.stderr[:200]}...")  # Limita o tamanho do erro
+            if result.stdout:
+                print(f"Saída: {result.stdout[:200]}...")  # Limita o tamanho da saída
     
-    if result.returncode == 0:
-        print(f"✓ Vídeos combinados com sucesso! ({VIDEO_WIDTH}x{VIDEO_HEIGHT})")
-        return True
-    else:
-        print(f"ERRO ao combinar vídeos!")
-        print(f"Código de erro: {result.returncode}")
-        print(f"Erro: {result.stderr}")
-        print(f"Saída: {result.stdout}")
-        
-        # Verifica se os vídeos de entrada existem
-        print("\nVerificando vídeos de entrada:")
-        for i, video in enumerate(INPUT_VIDEOS):
-            if os.path.exists(video):
-                print(f"✓ {video} encontrado")
-            else:
-                print(f"✗ {video} NÃO encontrado!")
-        
-        return False
+    print(f"\n✗ Todas as tentativas falharam!")
+    print("Verificando vídeos de entrada:")
+    for video in INPUT_VIDEOS:
+        if os.path.exists(video):
+            print(f"✓ {video} encontrado")
+        else:
+            print(f"✗ {video} NÃO encontrado!")
+    
+    return False
 
 def main():
     """Função principal."""
