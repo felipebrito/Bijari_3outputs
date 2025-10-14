@@ -97,11 +97,13 @@ if exist "ffmpeg.exe" (
         
         if "%ffmpeg_choice%"=="1" (
             echo.
-            echo Copiando FFmpeg para a pasta do projeto...
-            if exist "COPIAR_FFMPEG.bat" (
+            echo Baixando FFmpeg diretamente...
+            if exist "BAIXAR_FFMPEG_DIRETO.bat" (
+                call BAIXAR_FFMPEG_DIRETO.bat
+            ) else if exist "COPIAR_FFMPEG.bat" (
                 call COPIAR_FFMPEG.bat
             ) else (
-                echo ERRO: COPIAR_FFMPEG.bat nao encontrado!
+                echo ERRO: Scripts de FFmpeg nao encontrados!
                 echo FFmpeg sera baixado automaticamente quando necessario.
             )
         ) else if "%ffmpeg_choice%"=="3" (
