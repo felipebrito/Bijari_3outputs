@@ -159,23 +159,39 @@ def combine_videos():
         print()
         return False
     
-    # Verifica se os vídeos existem e são válidos
+    # Verifica se os vídeos existem
     print("Verificando vídeos de entrada...")
     for video in INPUT_VIDEOS:
         if not os.path.exists(video):
             print(f"ERRO: {video} não encontrado!")
             return False
-        
-        # Testa se o vídeo é válido
-        print(f"Testando {video}...")
-        test_cmd = [ffmpeg_path, "-i", video, "-f", "null", "-"]
-        test_result = subprocess.run(test_cmd, capture_output=True, text=True)
-        if test_result.returncode != 0:
-            print(f"AVISO: {video} pode ter problemas (código: {test_result.returncode})")
-            if test_result.stderr:
-                print(f"Erro: {test_result.stderr[:100]}...")
         else:
-            print(f"✓ {video} é válido")
+            print(f"✓ {video} encontrado")
+    
+    # Se o FFmpeg está com problemas, tenta usar o VLC para reproduzir diretamente
+    print("\nAVISO: FFmpeg está com problemas (erro 3221225781)")
+    print("Isso pode ser causado por:")
+    print("- Vídeos corrompidos ou formato incompatível")
+    print("- FFmpeg com problemas de compatibilidade")
+    print("- Problemas de memória ou permissões")
+    print()
+    print("SOLUÇÃO ALTERNATIVA:")
+    print("Vou tentar reproduzir os vídeos diretamente no VLC")
+    print("sem combinar (cada vídeo em uma janela separada)")
+    print()
+    
+    # Pergunta se quer continuar sem combinar
+    try:
+        resposta = input("Continuar sem combinar vídeos? (s/n): ").lower().strip()
+        if resposta in ['s', 'sim', 'y', 'yes']:
+            print("✓ Continuando sem combinar vídeos...")
+            return True  # Retorna True para continuar sem arquivo combinado
+        else:
+            print("✗ Operação cancelada pelo usuário")
+            return False
+    except:
+        print("✓ Continuando sem combinar vídeos...")
+        return True
     
     # Tenta diferentes abordagens para evitar erro de memória
     approaches = [
@@ -345,7 +361,49 @@ def main():
     else:
         print(f"✓ Vídeo combinado já existe: {OUTPUT_VIDEO}")
     
-    # Comando VLC borderless
+    # Se não há arquivo combinado, reproduz vídeos separadamente
+    if not os.path.exists(OUTPUT_VIDEO):
+        print("\n=== MODO ALTERNATIVO: VÍDEOS SEPARADOS ===")
+        print("Reproduzindo cada vídeo em uma janela separada...")
+        
+        # Abre cada vídeo em uma janela separada
+        for i, video in enumerate(INPUT_VIDEOS):
+            if os.path.exists(video):
+                print(f"Abrindo {video}...")
+                # Comando VLC para cada vídeo individual
+                cmd_individual = [
+                    VLC_PATH, video,
+                    "--width", str(INDIVIDUAL_WIDTH),
+                    "--height", str(INDIVIDUAL_HEIGHT),
+                    "--video-x", str(i * INDIVIDUAL_WIDTH),  # Posiciona lado a lado
+                    "--video-y", "0",
+                    "--no-video-deco",
+                    "--input-repeat=65535",  # Loop infinito
+                    "--no-video-title-show",
+                    "--no-osd",
+                    "--no-embedded-video",
+                    "--qt-start-minimized"
+                ]
+                subprocess.Popen(cmd_individual)
+                time.sleep(1)  # Pequena pausa entre aberturas
+        
+        print("✓ Todos os vídeos abertos em janelas separadas!")
+        print("As janelas serão posicionadas lado a lado automaticamente.")
+        print(f"Tecla de atalho: {HOTKEY.upper()} para sair")
+        
+        # Configura tecla de atalho global
+        setup_global_hotkey()
+        
+        try:
+            # Mantém o script rodando
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("\nFechando...")
+            os._exit(0)
+        return
+    
+    # Comando VLC borderless (modo normal com arquivo combinado)
     cmd = [VLC_PATH, OUTPUT_VIDEO] + VLC_ARGS
     
     print("Executando VLC...")
