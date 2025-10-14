@@ -159,11 +159,23 @@ def combine_videos():
         print()
         return False
     
-    # Verifica se os vídeos existem
+    # Verifica se os vídeos existem e são válidos
+    print("Verificando vídeos de entrada...")
     for video in INPUT_VIDEOS:
         if not os.path.exists(video):
             print(f"ERRO: {video} não encontrado!")
             return False
+        
+        # Testa se o vídeo é válido
+        print(f"Testando {video}...")
+        test_cmd = [ffmpeg_path, "-i", video, "-f", "null", "-"]
+        test_result = subprocess.run(test_cmd, capture_output=True, text=True)
+        if test_result.returncode != 0:
+            print(f"AVISO: {video} pode ter problemas (código: {test_result.returncode})")
+            if test_result.stderr:
+                print(f"Erro: {test_result.stderr[:100]}...")
+        else:
+            print(f"✓ {video} é válido")
     
     # Tenta diferentes abordagens para evitar erro de memória
     approaches = [
@@ -249,6 +261,28 @@ def combine_videos():
                 "-i", INPUT_VIDEOS[1],
                 "-filter_complex", 
                 "hstack=inputs=2",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        },
+        # Abordagem 6: Copiar apenas o primeiro vídeo
+        {
+            "name": "Copiar primeiro vídeo",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-c", "copy",
+                "-y",
+                OUTPUT_VIDEO
+            ]
+        },
+        # Abordagem 7: Teste básico sem filtros
+        {
+            "name": "Teste básico",
+            "cmd": [
+                ffmpeg_path,
+                "-i", INPUT_VIDEOS[0],
+                "-t", "10",  # Apenas 10 segundos
                 "-y",
                 OUTPUT_VIDEO
             ]
