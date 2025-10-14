@@ -168,17 +168,16 @@ def combine_videos():
         else:
             print(f"[OK] {video} encontrado")
     
-    # Tenta uma abordagem mais simples primeiro
-    print("\nTentando abordagem mais simples...")
+    # Comando principal: combinar 3 vídeos com rotação
+    print("Combinando 3 vídeos com rotação...")
     
-    # Abordagem ultra simples que deve funcionar
-    simple_cmd = [
+    main_cmd = [
         ffmpeg_path,
         "-i", INPUT_VIDEOS[0],
         "-i", INPUT_VIDEOS[1], 
         "-i", INPUT_VIDEOS[2],
         "-filter_complex", 
-        "[0:v][1:v][2:v]hstack=inputs=3[v]",
+        "[0:v]transpose=1,scale=1920:1080[v0];[1:v]transpose=1,scale=1920:1080[v1];[2:v]transpose=1,scale=1920:1080[v2];[v0][v1][v2]hstack=inputs=3[v]",
         "-map", "[v]",
         "-c:v", "libx264",
         "-preset", "ultrafast",
@@ -187,8 +186,8 @@ def combine_videos():
         OUTPUT_VIDEO
     ]
     
-    print(f"Comando simples: {' '.join(simple_cmd)}")
-    result = subprocess.run(simple_cmd, capture_output=True, text=True)
+    print(f"Executando: {' '.join(main_cmd)}")
+    result = subprocess.run(main_cmd, capture_output=True, text=True)
     
     if result.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
         print(f"[OK] Vídeos combinados com sucesso!")
@@ -197,53 +196,10 @@ def combine_videos():
         print(f"Tamanho: {file_size / (1024*1024):.2f} MB")
         return True
     else:
-        print(f"[ERRO] Falha com comando simples")
+        print(f"[ERRO] Falha ao combinar vídeos")
         if result.stderr:
             print(f"Erro: {result.stderr[:200]}...")
-        
-        # Tenta com apenas 2 vídeos
-        print("\nTentando com apenas 2 vídeos...")
-        cmd_2videos = [
-            ffmpeg_path,
-            "-i", INPUT_VIDEOS[0],
-            "-i", INPUT_VIDEOS[1],
-            "-filter_complex", 
-            "[0:v][1:v]hstack=inputs=2[v]",
-            "-map", "[v]",
-            "-c:v", "libx264",
-            "-preset", "ultrafast",
-            "-y",
-            OUTPUT_VIDEO
-        ]
-        
-        result2 = subprocess.run(cmd_2videos, capture_output=True, text=True)
-        if result2.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-            print(f"[OK] Vídeos combinados com sucesso (2 vídeos)!")
-            print(f"Arquivo gerado: {OUTPUT_VIDEO}")
-            return True
-        else:
-            print(f"[ERRO] Falha mesmo com 2 vídeos")
-            if result2.stderr:
-                print(f"Erro: {result2.stderr[:200]}...")
-            
-            # Última tentativa: copiar apenas o primeiro vídeo
-            print("\nÚltima tentativa: copiando apenas o primeiro vídeo...")
-            cmd_copy = [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-c", "copy",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-            
-            result3 = subprocess.run(cmd_copy, capture_output=True, text=True)
-            if result3.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-                print(f"[OK] Pelo menos o primeiro vídeo foi copiado!")
-                print(f"Arquivo gerado: {OUTPUT_VIDEO}")
-                return True
-            else:
-                print(f"[ERRO] Falha total - FFmpeg não consegue processar os vídeos")
-                return False
+        return False
     
 
 def main():
@@ -255,28 +211,15 @@ def main():
         print(f"ERRO: VLC não encontrado em {VLC_PATH}")
         return
     
-    # Sempre tenta combinar os vídeos primeiro (força conversão)
-    print("Forçando conversão dos vídeos...")
-    if os.path.exists(OUTPUT_VIDEO):
-        print("Removendo vídeo existente para forçar nova conversão...")
-        os.remove(OUTPUT_VIDEO)
-    
-    print("Tentando combinar vídeos...")
-    if not combine_videos():
-        print("Falha ao combinar vídeos. Usando vídeo de fallback...")
-        # Verifica se há um vídeo de fallback
-        fallback_video = "combined_video_fallback.mp4"
-        if os.path.exists(fallback_video):
-            print(f"[OK] Usando vídeo de fallback: {fallback_video}")
-            # Copia o vídeo de fallback para o nome esperado
-            import shutil
-            shutil.copy2(fallback_video, OUTPUT_VIDEO)
-            print(f"[OK] Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
-        else:
-            print("[ERRO] Nenhum vídeo encontrado para reproduzir!")
+    # Verifica se o vídeo combinado existe
+    if not os.path.exists(OUTPUT_VIDEO):
+        print("Vídeo combinado não encontrado. Criando...")
+        if not combine_videos():
+            print("[ERRO] Falha ao criar vídeo combinado!")
             return
+        print(f"[OK] Vídeo combinado criado: {OUTPUT_VIDEO}")
     else:
-        print(f"[OK] Vídeos combinados com sucesso: {OUTPUT_VIDEO}")
+        print(f"[OK] Vídeo combinado já existe: {OUTPUT_VIDEO}")
     
     
     # Comando VLC borderless (modo normal com arquivo combinado)
