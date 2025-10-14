@@ -91,14 +91,14 @@ def find_ffmpeg():
     
     for path in possible_paths:
         if shutil.which(path) or os.path.exists(path):
-            print(f"✓ FFmpeg encontrado: {path}")
+            print(f"[OK] FFmpeg encontrado: {path}")
             return path
     
     # Se não encontrou, tenta baixar automaticamente
     print("FFmpeg não encontrado. Tentando baixar automaticamente...")
     if download_ffmpeg():
         if os.path.exists("ffmpeg.exe"):
-            print("✓ FFmpeg baixado com sucesso!")
+            print("[OK] FFmpeg baixado com sucesso!")
             return "ffmpeg.exe"
     
     return None
@@ -129,7 +129,7 @@ def download_ffmpeg():
                         src = os.path.join(root, file)
                         dst = file
                         shutil.copy2(src, dst)
-                        print(f"✓ {file} copiado!")
+                        print(f"[OK] {file} copiado!")
         
         # Limpa arquivos temporários
         os.remove("ffmpeg.zip")
@@ -166,7 +166,7 @@ def combine_videos():
             print(f"ERRO: {video} não encontrado!")
             return False
         else:
-            print(f"✓ {video} encontrado")
+            print(f"[OK] {video} encontrado")
     
     # Tenta uma abordagem mais simples primeiro
     print("\nTentando abordagem mais simples...")
@@ -191,13 +191,13 @@ def combine_videos():
     result = subprocess.run(simple_cmd, capture_output=True, text=True)
     
     if result.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-        print(f"✓ Vídeos combinados com sucesso!")
+        print(f"[OK] Vídeos combinados com sucesso!")
         print(f"Arquivo gerado: {OUTPUT_VIDEO}")
         file_size = os.path.getsize(OUTPUT_VIDEO)
         print(f"Tamanho: {file_size / (1024*1024):.2f} MB")
         return True
     else:
-        print(f"✗ Falha com comando simples")
+        print(f"[ERRO] Falha com comando simples")
         if result.stderr:
             print(f"Erro: {result.stderr[:200]}...")
         
@@ -218,11 +218,11 @@ def combine_videos():
         
         result2 = subprocess.run(cmd_2videos, capture_output=True, text=True)
         if result2.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-            print(f"✓ Vídeos combinados com sucesso (2 vídeos)!")
+            print(f"[OK] Vídeos combinados com sucesso (2 vídeos)!")
             print(f"Arquivo gerado: {OUTPUT_VIDEO}")
             return True
         else:
-            print(f"✗ Falha mesmo com 2 vídeos")
+            print(f"[ERRO] Falha mesmo com 2 vídeos")
             if result2.stderr:
                 print(f"Erro: {result2.stderr[:200]}...")
             
@@ -238,11 +238,11 @@ def combine_videos():
             
             result3 = subprocess.run(cmd_copy, capture_output=True, text=True)
             if result3.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-                print(f"✓ Pelo menos o primeiro vídeo foi copiado!")
+                print(f"[OK] Pelo menos o primeiro vídeo foi copiado!")
                 print(f"Arquivo gerado: {OUTPUT_VIDEO}")
                 return True
             else:
-                print(f"✗ Falha total - FFmpeg não consegue processar os vídeos")
+                print(f"[ERRO] Falha total - FFmpeg não consegue processar os vídeos")
                 return False
     
 
@@ -267,16 +267,16 @@ def main():
         # Verifica se há um vídeo de fallback
         fallback_video = "combined_video_fallback.mp4"
         if os.path.exists(fallback_video):
-            print(f"✓ Usando vídeo de fallback: {fallback_video}")
+            print(f"[OK] Usando vídeo de fallback: {fallback_video}")
             # Copia o vídeo de fallback para o nome esperado
             import shutil
             shutil.copy2(fallback_video, OUTPUT_VIDEO)
-            print(f"✓ Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
+            print(f"[OK] Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
         else:
-            print("✗ Nenhum vídeo encontrado para reproduzir!")
+            print("[ERRO] Nenhum vídeo encontrado para reproduzir!")
             return
     else:
-        print(f"✓ Vídeos combinados com sucesso: {OUTPUT_VIDEO}")
+        print(f"[OK] Vídeos combinados com sucesso: {OUTPUT_VIDEO}")
     
     
     # Comando VLC borderless (modo normal com arquivo combinado)
