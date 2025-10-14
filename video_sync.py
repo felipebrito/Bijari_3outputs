@@ -168,182 +168,81 @@ def combine_videos():
         else:
             print(f"✓ {video} encontrado")
     
-    # Se o FFmpeg está com problemas, tenta usar o VLC para reproduzir diretamente
-    print("\nAVISO: FFmpeg está com problemas (erro 3221225781)")
-    print("Isso pode ser causado por:")
-    print("- Vídeos corrompidos ou formato incompatível")
-    print("- FFmpeg com problemas de compatibilidade")
-    print("- Problemas de memória ou permissões")
-    print()
-    print("SOLUÇÃO ALTERNATIVA:")
-    print("Vou tentar reproduzir os vídeos diretamente no VLC")
-    print("sem combinar (cada vídeo em uma janela separada)")
-    print()
+    # Tenta uma abordagem mais simples primeiro
+    print("\nTentando abordagem mais simples...")
     
-    # Pergunta se quer continuar sem combinar
-    try:
-        resposta = input("Continuar sem combinar vídeos? (s/n): ").lower().strip()
-        if resposta in ['s', 'sim', 'y', 'yes']:
-            print("✓ Continuando sem combinar vídeos...")
-            return True  # Retorna True para continuar sem arquivo combinado
-        else:
-            print("✗ Operação cancelada pelo usuário")
-            return False
-    except:
-        print("✓ Continuando sem combinar vídeos...")
+    # Abordagem ultra simples que deve funcionar
+    simple_cmd = [
+        ffmpeg_path,
+        "-i", INPUT_VIDEOS[0],
+        "-i", INPUT_VIDEOS[1], 
+        "-i", INPUT_VIDEOS[2],
+        "-filter_complex", 
+        "hstack=inputs=3",
+        "-c:v", "libx264",
+        "-preset", "ultrafast",
+        "-crf", "30",
+        "-y",
+        OUTPUT_VIDEO
+    ]
+    
+    print(f"Comando simples: {' '.join(simple_cmd)}")
+    result = subprocess.run(simple_cmd, capture_output=True, text=True)
+    
+    if result.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
+        print(f"✓ Vídeos combinados com sucesso!")
+        print(f"Arquivo gerado: {OUTPUT_VIDEO}")
+        file_size = os.path.getsize(OUTPUT_VIDEO)
+        print(f"Tamanho: {file_size / (1024*1024):.2f} MB")
         return True
-    
-    # Tenta diferentes abordagens para evitar erro de memória
-    approaches = [
-        # Abordagem 1: Comando original
-        {
-            "name": "Comando original",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-i", INPUT_VIDEOS[1], 
-                "-i", INPUT_VIDEOS[2],
-                "-filter_complex", 
-                f"[0:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
-                f"[1:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
-                f"[2:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
-                "[v0][v1][v2]hstack=inputs=3[v]",
-                "-map", "[v]",
-                "-c:v", "libx264",
-                "-preset", "fast",
-                "-crf", "23",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        },
-        # Abordagem 2: Sem rotação (mais simples)
-        {
-            "name": "Sem rotação",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-i", INPUT_VIDEOS[1], 
-                "-i", INPUT_VIDEOS[2],
-                "-filter_complex", 
-                f"[0:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
-                f"[1:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
-                f"[2:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
-                "[v0][v1][v2]hstack=inputs=3[v]",
-                "-map", "[v]",
-                "-c:v", "libx264",
-                "-preset", "ultrafast",
-                "-crf", "28",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        },
-        # Abordagem 3: Mais simples ainda
-        {
-            "name": "Comando simplificado",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-i", INPUT_VIDEOS[1], 
-                "-i", INPUT_VIDEOS[2],
-                "-filter_complex", 
-                "[0:v][1:v][2:v]hstack=inputs=3[v]",
-                "-map", "[v]",
-                "-c:v", "libx264",
-                "-preset", "ultrafast",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        },
-        # Abordagem 4: Ultra simples (sem codec específico)
-        {
-            "name": "Ultra simples",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-i", INPUT_VIDEOS[1], 
-                "-i", INPUT_VIDEOS[2],
-                "-filter_complex", 
-                "hstack=inputs=3",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        },
-        # Abordagem 5: Apenas 2 vídeos primeiro
-        {
-            "name": "Apenas 2 vídeos",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-i", INPUT_VIDEOS[1],
-                "-filter_complex", 
-                "hstack=inputs=2",
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        },
-        # Abordagem 6: Copiar apenas o primeiro vídeo
-        {
-            "name": "Copiar primeiro vídeo",
-            "cmd": [
+    else:
+        print(f"✗ Falha com comando simples")
+        if result.stderr:
+            print(f"Erro: {result.stderr[:200]}...")
+        
+        # Tenta com apenas 2 vídeos
+        print("\nTentando com apenas 2 vídeos...")
+        cmd_2videos = [
+            ffmpeg_path,
+            "-i", INPUT_VIDEOS[0],
+            "-i", INPUT_VIDEOS[1],
+            "-filter_complex", 
+            "hstack=inputs=2",
+            "-c:v", "libx264",
+            "-preset", "ultrafast",
+            "-y",
+            OUTPUT_VIDEO
+        ]
+        
+        result2 = subprocess.run(cmd_2videos, capture_output=True, text=True)
+        if result2.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
+            print(f"✓ Vídeos combinados com sucesso (2 vídeos)!")
+            print(f"Arquivo gerado: {OUTPUT_VIDEO}")
+            return True
+        else:
+            print(f"✗ Falha mesmo com 2 vídeos")
+            if result2.stderr:
+                print(f"Erro: {result2.stderr[:200]}...")
+            
+            # Última tentativa: copiar apenas o primeiro vídeo
+            print("\nÚltima tentativa: copiando apenas o primeiro vídeo...")
+            cmd_copy = [
                 ffmpeg_path,
                 "-i", INPUT_VIDEOS[0],
                 "-c", "copy",
                 "-y",
                 OUTPUT_VIDEO
             ]
-        },
-        # Abordagem 7: Teste básico sem filtros
-        {
-            "name": "Teste básico",
-            "cmd": [
-                ffmpeg_path,
-                "-i", INPUT_VIDEOS[0],
-                "-t", "10",  # Apenas 10 segundos
-                "-y",
-                OUTPUT_VIDEO
-            ]
-        }
-    ]
-    
-    for i, approach in enumerate(approaches, 1):
-        print(f"\nTentativa {i}: {approach['name']}")
-        print(f"Comando: {' '.join(approach['cmd'])}")
-        
-        result = subprocess.run(approach['cmd'], capture_output=True, text=True)
-        
-        if result.returncode == 0:
-            # Verifica se o arquivo foi realmente criado
-            if os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
-                print(f"✓ Vídeos combinados com sucesso usando {approach['name']}!")
+            
+            result3 = subprocess.run(cmd_copy, capture_output=True, text=True)
+            if result3.returncode == 0 and os.path.exists(OUTPUT_VIDEO) and os.path.getsize(OUTPUT_VIDEO) > 0:
+                print(f"✓ Pelo menos o primeiro vídeo foi copiado!")
                 print(f"Arquivo gerado: {OUTPUT_VIDEO}")
-                file_size = os.path.getsize(OUTPUT_VIDEO)
-                print(f"Tamanho: {file_size / (1024*1024):.2f} MB")
                 return True
             else:
-                print(f"✗ FFmpeg retornou sucesso mas arquivo não foi criado!")
-                print(f"Verificando se {OUTPUT_VIDEO} existe...")
-                if os.path.exists(OUTPUT_VIDEO):
-                    print(f"Arquivo existe mas está vazio (tamanho: {os.path.getsize(OUTPUT_VIDEO)} bytes)")
-                else:
-                    print(f"Arquivo não existe")
-                continue  # Tenta próxima abordagem
-        else:
-            print(f"✗ Falha com {approach['name']}")
-            print(f"Código de erro: {result.returncode}")
-            if result.stderr:
-                print(f"Erro: {result.stderr[:200]}...")  # Limita o tamanho do erro
-            if result.stdout:
-                print(f"Saída: {result.stdout[:200]}...")  # Limita o tamanho da saída
+                print(f"✗ Falha total - FFmpeg não consegue processar os vídeos")
+                return False
     
-    print(f"\n✗ Todas as tentativas falharam!")
-    print("Verificando vídeos de entrada:")
-    for video in INPUT_VIDEOS:
-        if os.path.exists(video):
-            print(f"✓ {video} encontrado")
-        else:
-            print(f"✗ {video} NÃO encontrado!")
-    
-    return False
 
 def main():
     """Função principal."""
@@ -356,52 +255,23 @@ def main():
     
     # Combina os vídeos se necessário
     if not os.path.exists(OUTPUT_VIDEO):
+        print("Vídeo combinado não encontrado. Tentando combinar...")
         if not combine_videos():
-            return
+            print("Falha ao combinar vídeos. Verificando se há vídeo de fallback...")
+            # Verifica se há um vídeo de fallback
+            fallback_video = "combined_video_fallback.mp4"
+            if os.path.exists(fallback_video):
+                print(f"✓ Usando vídeo de fallback: {fallback_video}")
+                # Copia o vídeo de fallback para o nome esperado
+                import shutil
+                shutil.copy2(fallback_video, OUTPUT_VIDEO)
+                print(f"✓ Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
+            else:
+                print("✗ Nenhum vídeo encontrado para reproduzir!")
+                return
     else:
         print(f"✓ Vídeo combinado já existe: {OUTPUT_VIDEO}")
     
-    # Se não há arquivo combinado, reproduz vídeos separadamente
-    if not os.path.exists(OUTPUT_VIDEO):
-        print("\n=== MODO ALTERNATIVO: VÍDEOS SEPARADOS ===")
-        print("Reproduzindo cada vídeo em uma janela separada...")
-        
-        # Abre cada vídeo em uma janela separada
-        for i, video in enumerate(INPUT_VIDEOS):
-            if os.path.exists(video):
-                print(f"Abrindo {video}...")
-                # Comando VLC para cada vídeo individual
-                cmd_individual = [
-                    VLC_PATH, video,
-                    "--width", str(INDIVIDUAL_WIDTH),
-                    "--height", str(INDIVIDUAL_HEIGHT),
-                    "--video-x", str(i * INDIVIDUAL_WIDTH),  # Posiciona lado a lado
-                    "--video-y", "0",
-                    "--no-video-deco",
-                    "--input-repeat=65535",  # Loop infinito
-                    "--no-video-title-show",
-                    "--no-osd",
-                    "--no-embedded-video",
-                    "--qt-start-minimized"
-                ]
-                subprocess.Popen(cmd_individual)
-                time.sleep(1)  # Pequena pausa entre aberturas
-        
-        print("✓ Todos os vídeos abertos em janelas separadas!")
-        print("As janelas serão posicionadas lado a lado automaticamente.")
-        print(f"Tecla de atalho: {HOTKEY.upper()} para sair")
-        
-        # Configura tecla de atalho global
-        setup_global_hotkey()
-        
-        try:
-            # Mantém o script rodando
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print("\nFechando...")
-            os._exit(0)
-        return
     
     # Comando VLC borderless (modo normal com arquivo combinado)
     cmd = [VLC_PATH, OUTPUT_VIDEO] + VLC_ARGS
