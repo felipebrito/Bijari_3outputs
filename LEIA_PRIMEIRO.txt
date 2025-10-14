@@ -1,0 +1,41 @@
+========================================
+  Bijari 3 Outputs - Leia Primeiro
+========================================
+
+🎯 O QUE FAZ:
+- Toca 3 vídeos sincronizados em 3 monitores
+- Reinicia automaticamente se parar
+- Funciona 24/7 sem intervenção
+
+📁 ARQUIVOS PRINCIPAIS:
+- INSTALAR.bat - Instala tudo (só uma vez)
+- INICIAR_PRODUCAO.bat - Usa o sistema
+- CONFIGURAR.bat - Configura e testa
+- COMO_USAR.txt - Instruções detalhadas
+
+🚀 COMO USAR (3 passos):
+
+1. INSTALAR (só uma vez):
+   → Clique duplo em "INSTALAR.bat"
+   → Siga as instruções
+
+2. USAR:
+   → Clique duplo em "INICIAR_PRODUCAO.bat"
+   → O sistema inicia automaticamente
+
+3. PARAR:
+   → Pressione Ctrl+Q (em qualquer lugar)
+
+📋 ANTES DE COMEÇAR:
+- Coloque os vídeos: Tela01.mp4, Tela02.mp4, Tela03.mp4
+- Configure 3 monitores de 1920x1080 lado a lado
+- Instale Python e VLC (o instalador ajuda)
+
+❓ PROBLEMAS:
+- Execute "CONFIGURAR.bat" para diagnosticar
+- Leia "COMO_USAR.txt" para detalhes
+- Entre em contato com o suporte técnico
+
+========================================
+  PRONTO PARA USAR!
+========================================

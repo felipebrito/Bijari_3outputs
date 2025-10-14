@@ -1,0 +1,50 @@
+========================================
+  Bijari 3 Outputs - Como Usar
+========================================
+
+PASSO A PASSO SIMPLES:
+
+1. INSTALAR (só precisa fazer uma vez):
+   - Clique duplo em "INSTALAR.bat"
+   - Siga as instruções na tela
+
+2. USAR O SISTEMA:
+   - Para PRODUÇÃO: Clique duplo em "INICIAR_PRODUCAO.bat"
+   - Para DESENVOLVIMENTO: Clique duplo em "INICIAR_DESENVOLVIMENTO.bat"
+
+3. PARAR O SISTEMA:
+   - Pressione Ctrl+Q (em qualquer lugar)
+   - Ou feche a janela
+
+========================================
+  ARQUIVOS NECESSÁRIOS:
+========================================
+
+- Tela01.mp4 (vídeo para monitor 1)
+- Tela02.mp4 (vídeo para monitor 2)  
+- Tela03.mp4 (vídeo para monitor 3)
+
+Os vídeos devem ter resolução 1080x1920 (vertical)
+
+========================================
+  PROBLEMAS COMUNS:
+========================================
+
+ERRO: Python não encontrado
+→ Baixe em: https://www.python.org/downloads/
+→ Marque "Add Python to PATH" na instalação
+
+ERRO: VLC não encontrado  
+→ Baixe em: https://www.videolan.org/vlc/
+→ Instale no caminho padrão
+
+ERRO: Vídeos não encontrados
+→ Coloque Tela01.mp4, Tela02.mp4, Tela03.mp4 nesta pasta
+
+========================================
+  CONTATO:
+========================================
+
+Se tiver problemas, entre em contato com o suporte técnico.
+
+========================================
