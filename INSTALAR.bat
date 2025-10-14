@@ -80,6 +80,25 @@ if not exist "C:\Program Files\VideoLAN\VLC\vlc.exe" (
 echo ✓ VLC encontrado!
 
 echo.
+echo [3.5/4] Verificando FFmpeg...
+ffmpeg -version >nul 2>&1
+if errorlevel 1 (
+    echo AVISO: FFmpeg nao encontrado!
+    echo.
+    echo INSTRUCOES:
+    echo 1. Baixe FFmpeg em: https://ffmpeg.org/download.html
+    echo 2. Extraia para C:\ffmpeg\
+    echo 3. Adicione C:\ffmpeg\bin\ ao PATH do sistema
+    echo 4. Ou coloque ffmpeg.exe na pasta do projeto
+    echo.
+    echo CONTINUANDO SEM FFmpeg...
+    echo (O sistema tentara encontrar automaticamente)
+    echo.
+) else (
+    echo ✓ FFmpeg encontrado!
+)
+
+echo.
 echo [4/4] Verificando videos...
 if not exist "Tela01.mp4" (
     echo ERRO: Tela01.mp4 nao encontrado!

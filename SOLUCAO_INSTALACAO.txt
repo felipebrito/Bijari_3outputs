@@ -1,12 +1,16 @@
 ========================================
-  SOLUÇÃO PARA ERRO DE INSTALAÇÃO
+  SOLUÇÃO PARA ERROS DE INSTALAÇÃO
 ========================================
 
-❌ ERRO COMUM:
+❌ ERRO COMUM 1:
 "ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'"
+
+❌ ERRO COMUM 2:
+"FileNotFoundError: [WinError 2] The system cannot find the file specified" (FFmpeg)
 
 ✅ SOLUÇÕES:
 
+🔧 ERRO 1 - requirements.txt não encontrado:
 1. VERIFICAR LOCALIZAÇÃO:
    - Certifique-se de estar na pasta correta do projeto
    - A pasta deve conter os arquivos: requirements.txt, video_sync.py, etc.
@@ -17,13 +21,28 @@
    - video_sync.py deve existir na pasta principal
    - Todos os arquivos .bat devem estar na pasta principal
 
-3. COMO EXECUTAR CORRETAMENTE:
+🔧 ERRO 2 - FFmpeg não encontrado:
+1. INSTALAR FFmpeg:
+   - Baixe em: https://ffmpeg.org/download.html
+   - Extraia para C:\ffmpeg\
+   - Adicione C:\ffmpeg\bin\ ao PATH do sistema
+
+2. ALTERNATIVA SIMPLES:
+   - Baixe ffmpeg.exe
+   - Coloque na pasta do projeto (mesma pasta dos .bat)
+
+3. VERIFICAR INSTALAÇÃO:
+   - Abra o Prompt de Comando
+   - Digite: ffmpeg -version
+   - Deve mostrar informações do FFmpeg
+
+🚀 COMO EXECUTAR CORRETAMENTE:
    - Abra o Windows Explorer
    - Navegue até a pasta do projeto
    - Clique duplo em "INSTALAR.bat"
    - NÃO execute de dentro de subpastas como "development" ou "production"
 
-4. SE O PROBLEMA PERSISTIR:
+❓ SE O PROBLEMA PERSISTIR:
    - Execute "CONFIGURAR.bat" primeiro
    - Verifique se todos os arquivos estão presentes
    - Entre em contato com o suporte técnico
@@ -39,5 +58,14 @@
 - Tela01.mp4
 - Tela02.mp4
 - Tela03.mp4
+- ffmpeg.exe (opcional - se não estiver no PATH)
+
+========================================
+  PRÉ-REQUISITOS:
+========================================
+- Python 3.8+ instalado
+- VLC Media Player instalado
+- FFmpeg instalado (ou ffmpeg.exe na pasta)
+- 3 monitores configurados lado a lado
 
 ========================================

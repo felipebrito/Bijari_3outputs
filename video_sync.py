@@ -11,6 +11,7 @@ import threading
 import keyboard
 import win32gui
 import win32con
+import shutil
 from config import *
 
 
@@ -75,9 +76,42 @@ def setup_global_hotkey():
     keyboard.add_hotkey(HOTKEY, on_hotkey)
     print(f"Tecla de atalho configurada: {HOTKEY.upper()} para sair")
 
+def find_ffmpeg():
+    """Encontra o FFmpeg no sistema."""
+    # Caminhos possíveis para o FFmpeg
+    possible_paths = [
+        "ffmpeg",  # No PATH
+        r"C:\ffmpeg\bin\ffmpeg.exe",
+        r"C:\Program Files\ffmpeg\bin\ffmpeg.exe",
+        r"C:\Program Files (x86)\ffmpeg\bin\ffmpeg.exe",
+        r"C:\tools\ffmpeg\bin\ffmpeg.exe",
+        r"C:\Users\{}\AppData\Local\ffmpeg\bin\ffmpeg.exe".format(os.getenv('USERNAME')),
+    ]
+    
+    for path in possible_paths:
+        if shutil.which(path) or os.path.exists(path):
+            print(f"✓ FFmpeg encontrado: {path}")
+            return path
+    
+    return None
+
+
 def combine_videos():
     """Combina os 3 vídeos em um único arquivo."""
     print("Combinando vídeos com FFmpeg...")
+    
+    # Encontra o FFmpeg
+    ffmpeg_path = find_ffmpeg()
+    if not ffmpeg_path:
+        print("ERRO: FFmpeg não encontrado!")
+        print()
+        print("SOLUÇÃO:")
+        print("1. Baixe FFmpeg em: https://ffmpeg.org/download.html")
+        print("2. Extraia para C:\\ffmpeg\\")
+        print("3. Adicione C:\\ffmpeg\\bin\\ ao PATH do sistema")
+        print("4. Ou coloque ffmpeg.exe na pasta do projeto")
+        print()
+        return False
     
     # Verifica se os vídeos existem
     for video in INPUT_VIDEOS:
@@ -86,7 +120,7 @@ def combine_videos():
             return False
     
     cmd = [
-        FFMPEG_PATH,
+        ffmpeg_path,
         "-i", INPUT_VIDEOS[0],
         "-i", INPUT_VIDEOS[1], 
         "-i", INPUT_VIDEOS[2],
