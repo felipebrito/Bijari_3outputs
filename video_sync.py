@@ -253,24 +253,28 @@ def main():
         print(f"ERRO: VLC não encontrado em {VLC_PATH}")
         return
     
-    # Combina os vídeos se necessário
-    if not os.path.exists(OUTPUT_VIDEO):
-        print("Vídeo combinado não encontrado. Tentando combinar...")
-        if not combine_videos():
-            print("Falha ao combinar vídeos. Verificando se há vídeo de fallback...")
-            # Verifica se há um vídeo de fallback
-            fallback_video = "combined_video_fallback.mp4"
-            if os.path.exists(fallback_video):
-                print(f"✓ Usando vídeo de fallback: {fallback_video}")
-                # Copia o vídeo de fallback para o nome esperado
-                import shutil
-                shutil.copy2(fallback_video, OUTPUT_VIDEO)
-                print(f"✓ Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
-            else:
-                print("✗ Nenhum vídeo encontrado para reproduzir!")
-                return
+    # Sempre tenta combinar os vídeos primeiro (força conversão)
+    print("Forçando conversão dos vídeos...")
+    if os.path.exists(OUTPUT_VIDEO):
+        print("Removendo vídeo existente para forçar nova conversão...")
+        os.remove(OUTPUT_VIDEO)
+    
+    print("Tentando combinar vídeos...")
+    if not combine_videos():
+        print("Falha ao combinar vídeos. Usando vídeo de fallback...")
+        # Verifica se há um vídeo de fallback
+        fallback_video = "combined_video_fallback.mp4"
+        if os.path.exists(fallback_video):
+            print(f"✓ Usando vídeo de fallback: {fallback_video}")
+            # Copia o vídeo de fallback para o nome esperado
+            import shutil
+            shutil.copy2(fallback_video, OUTPUT_VIDEO)
+            print(f"✓ Vídeo de fallback copiado como: {OUTPUT_VIDEO}")
+        else:
+            print("✗ Nenhum vídeo encontrado para reproduzir!")
+            return
     else:
-        print(f"✓ Vídeo combinado já existe: {OUTPUT_VIDEO}")
+        print(f"✓ Vídeos combinados com sucesso: {OUTPUT_VIDEO}")
     
     
     # Comando VLC borderless (modo normal com arquivo combinado)
