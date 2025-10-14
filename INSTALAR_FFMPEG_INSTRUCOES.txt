@@ -4,14 +4,20 @@
 
 🚀 MÉTODOS DE INSTALAÇÃO:
 
-📦 MÉTODO 1 - CHOCOLATEY (Recomendado):
+📦 MÉTODO 1 - SCRIPT AUTOMÁTICO (Mais Fácil):
+1. Clique com botão direito em "instalar_ffmpeg.ps1"
+2. Escolha "Executar com PowerShell"
+3. Escolha "Sim" quando perguntar sobre execução
+4. Pronto!
+
+📦 MÉTODO 2 - CHOCOLATEY (Manual):
 1. Abra PowerShell como Administrador
 2. Execute: Set-ExecutionPolicy Bypass -Scope Process -Force
 3. Execute: iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 4. Execute: choco install ffmpeg -y
 5. Reinicie o terminal
 
-📦 MÉTODO 2 - WINGET (Windows 10/11):
+📦 MÉTODO 3 - WINGET (Windows 10/11):
 1. Abra PowerShell como Administrador
 2. Execute: winget install ffmpeg
 3. Reinicie o terminal

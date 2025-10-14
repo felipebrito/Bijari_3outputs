@@ -30,11 +30,14 @@ echo [INSTALANDO VIA CHOCOLATEY...]
 echo.
 
 echo Verificando se Chocolatey esta instalado...
-powershell -Command "Get-Command choco -ErrorAction SilentlyContinue" >nul 2>&1
+where choco >nul 2>&1
 if errorlevel 1 (
     echo Chocolatey nao encontrado! Instalando...
     echo.
-    powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+    echo Abrindo PowerShell para instalar Chocolatey...
+    echo (Siga as instrucoes na janela que abrir)
+    echo.
+    powershell -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); pause"
     if errorlevel 1 (
         echo ERRO: Falha ao instalar Chocolatey!
         echo.
