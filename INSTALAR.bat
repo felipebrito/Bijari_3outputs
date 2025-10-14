@@ -6,6 +6,31 @@ echo ========================================
 echo.
 echo Este script vai instalar tudo automaticamente!
 echo.
+echo Verificando arquivos necessarios...
+if not exist "requirements.txt" (
+    echo ERRO: Arquivo requirements.txt nao encontrado!
+    echo.
+    echo SOLUCAO:
+    echo 1. Certifique-se de que voce esta na pasta correta do projeto
+    echo 2. Verifique se todos os arquivos foram copiados corretamente
+    echo 3. Execute este script novamente
+    echo.
+    pause
+    exit /b 1
+)
+if not exist "video_sync.py" (
+    echo ERRO: Arquivo video_sync.py nao encontrado!
+    echo.
+    echo SOLUCAO:
+    echo 1. Certifique-se de que voce esta na pasta correta do projeto
+    echo 2. Verifique se todos os arquivos foram copiados corretamente
+    echo 3. Execute este script novamente
+    echo.
+    pause
+    exit /b 1
+)
+echo ✓ Arquivos necessarios encontrados!
+echo.
 pause
 
 echo [1/4] Verificando Python...
@@ -26,6 +51,17 @@ echo ✓ Python encontrado!
 echo.
 echo [2/4] Instalando dependencias...
 pip install -r requirements.txt
+if errorlevel 1 (
+    echo ERRO: Falha ao instalar as dependencias!
+    echo.
+    echo INSTRUCOES:
+    echo 1. Verifique sua conexao com a internet
+    echo 2. Execute este script novamente
+    echo 3. Se o problema persistir, entre em contato com o suporte tecnico
+    echo.
+    pause
+    exit /b 1
+)
 echo ✓ Dependencias instaladas!
 
 echo.
