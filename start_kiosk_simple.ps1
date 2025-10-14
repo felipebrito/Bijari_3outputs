@@ -1,16 +1,12 @@
-# Bijari 3 Outputs - Kiosk Mode PowerShell Launcher
-# Sistema de produção com reinicialização automática
+# Bijari 3 Outputs - Kiosk Mode (Versão Simples)
+# Execute como administrador para melhor funcionamento
 
 param(
-    [switch]$RunAsAdmin,
     [switch]$Silent
 )
 
-# Configurações
 $Title = "Bijari 3 Outputs - Kiosk Mode"
 $LogFile = "kiosk.log"
-$MaxRestarts = 10
-$RestartWindow = 3600  # 1 hora
 
 # Função para logging
 function Write-Log {
@@ -19,25 +15,6 @@ function Write-Log {
     $LogEntry = "$Timestamp - $Level - $Message"
     Write-Host $LogEntry
     Add-Content -Path $LogFile -Value $LogEntry
-}
-
-# Função para verificar se está rodando como admin
-function Test-Administrator {
-    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
-    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-}
-
-# Função para reiniciar como administrador
-function Start-AsAdministrator {
-    Write-Log "Reiniciando como administrador..."
-    try {
-        Start-Process PowerShell -ArgumentList "-File `"$PSCommandPath`" -RunAsAdmin" -Verb RunAs
-        exit
-    } catch {
-        Write-Log "Erro ao reiniciar como administrador: $($_.Exception.Message)" "ERROR"
-        Write-Log "Execute manualmente como administrador" "WARNING"
-    }
 }
 
 # Função para verificar se o processo está rodando
@@ -81,6 +58,8 @@ function Start-VideoSync {
 # Função principal do kiosk
 function Start-KioskMode {
     $RestartCount = 0
+    $MaxRestarts = 10
+    $RestartWindow = 3600  # 1 hora
     $LastRestartTime = 0
     
     Write-Log "=== INICIANDO MODO KIOSK ==="
@@ -154,16 +133,6 @@ if (-not $Silent) {
     Write-Host "Sistema de produção com reinicialização automática"
     Write-Host "Pressione Ctrl+C para sair"
     Write-Host ""
-}
-
-# Verifica se está rodando como admin
-if (-not (Test-Administrator)) {
-    if ($RunAsAdmin) {
-        Start-AsAdministrator
-    } else {
-        Write-Log "AVISO: Execute como administrador para melhor funcionamento" "WARNING"
-        Write-Log "Use: .\start_kiosk.ps1 -RunAsAdmin" "INFO"
-    }
 }
 
 # Verifica se Python está instalado
