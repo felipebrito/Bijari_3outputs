@@ -177,12 +177,12 @@ def combine_videos_4k():
     print(f"Resolução final: {FINAL_WIDTH}x{FINAL_HEIGHT}")
     
     # Filtro complexo para matriz 2x2
-    # Cada vídeo é redimensionado para 1920x1280 e depois organizado em 2x2
+    # Cada vídeo é rotacionado 90° e redimensionado para 1920x1080, depois organizado em 2x2
     filter_complex = (
-        f"[0:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
-        f"[1:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
-        f"[2:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
-        f"[3:v]scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v3];"
+        f"[0:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v0];"
+        f"[1:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v1];"
+        f"[2:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v2];"
+        f"[3:v]transpose=1,scale={INDIVIDUAL_WIDTH}:{INDIVIDUAL_HEIGHT}[v3];"
         f"[v0][v1]hstack=inputs=2[top];"
         f"[v2][v3]hstack=inputs=2[bottom];"
         f"[top][bottom]vstack=inputs=2[v]"

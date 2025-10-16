@@ -11,7 +11,7 @@ Sistema de sincronização de vídeos para múltiplos monitores com controle de 
 
 ### Bijari 4K (Nova versão)
 - Toca 4 vídeos em matriz 2x2 em uma saída 4K
-- Resolução: 3840x2560 (4K com aspect ratio 3:2)
+- Resolução: 3840x2160 (4K padrão)
 - Layout: [Tela01] [Tela02]
           [Tela03] [Tela03]
 
@@ -67,7 +67,7 @@ Pressione: Ctrl+Q
 
 ### Para versão 4K:
 - Coloque os vídeos: `Tela01.mp4`, `Tela02.mp4`, `Tela03.mp4`
-- Configure um monitor 4K (3840x2560) ou maior
+- Configure um monitor 4K (3840x2160) ou maior
 - Instale Python e VLC (o instalador ajuda)
 
 ## 📁 Arquivos principais
@@ -108,8 +108,8 @@ Pressione: Ctrl+Q
 
 ### Versão 4K (Nova):
 - **Vídeos de entrada**: MP4 (1080x1920 portrait)
-- **Processamento**: Redimensionamento para 1920x1280 (landscape)
-- **Saída**: MP4 (3840x2560 - matriz 2x2 4K)
+- **Processamento**: Rotação 90° para 1920x1080 (landscape)
+- **Saída**: MP4 (3840x2160 - matriz 2x2 4K)
 - **Layout**: [Tela01] [Tela02]
               [Tela03] [Tela03]
 - **Loop**: Infinito imperceptível

@@ -13,13 +13,13 @@ INPUT_VIDEOS = ["Tela01.mp4", "Tela02.mp4", "Tela03.mp4", "Tela03.mp4"]
 OUTPUT_VIDEO = "combined_video_4k.mp4"
 
 # Resoluções para matriz 2x2 4K
-# Resolução final: 3840x2560 (4K com aspect ratio 3:2)
+# Resolução final: 3840x2160 (4K padrão - 2x2 de vídeos 1920x1080)
 FINAL_WIDTH = 3840   # Largura total da saída 4K
-FINAL_HEIGHT = 2560  # Altura total da saída 4K
+FINAL_HEIGHT = 2160  # Altura total da saída 4K
 
-# Resolução de cada vídeo individual na matriz (Full HD)
-INDIVIDUAL_WIDTH = 1920   # Largura de cada vídeo individual
-INDIVIDUAL_HEIGHT = 1280  # Altura de cada vídeo individual (para manter aspect ratio)
+# Resolução de cada vídeo individual na matriz (Full HD após rotação)
+INDIVIDUAL_WIDTH = 1920   # Largura de cada vídeo individual (após rotação 90°)
+INDIVIDUAL_HEIGHT = 1080  # Altura de cada vídeo individual (após rotação 90°)
 
 # Configurações do VLC para 4K
 VLC_ARGS = [

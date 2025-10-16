@@ -13,8 +13,8 @@ Layout da matriz:
 
 CARACTERÍSTICAS
 --------------
-- Resolução final: 3840x2560 (4K com aspect ratio 3:2)
-- Cada vídeo individual: 1920x1280 (Full HD adaptado)
+- Resolução final: 3840x2160 (4K padrão)
+- Cada vídeo individual: 1920x1080 (Full HD após rotação 90°)
 - Loop infinito imperceptível
 - Controle de foco automático
 - Tecla de atalho global (Ctrl+Q) para sair
@@ -32,7 +32,7 @@ REQUISITOS
 - VLC Media Player instalado
 - FFmpeg (baixado automaticamente se necessário)
 - Vídeos: Tela01.mp4, Tela02.mp4, Tela03.mp4
-- Monitor 4K (3840x2560) ou maior
+- Monitor 4K (3840x2160) ou maior
 
 USO BÁSICO
 ----------
@@ -49,13 +49,13 @@ Execute: INICIAR_DESENVOLVIMENTO_4K.bat
 
 PROCESSAMENTO DE VÍDEO
 ----------------------
-1. Cada vídeo de entrada é redimensionado para 1920x1280
+1. Cada vídeo de entrada é rotacionado 90° e redimensionado para 1920x1080
 2. Os vídeos são organizados em matriz 2x2:
    - Canto superior esquerdo: Tela01
    - Canto superior direito: Tela02
    - Canto inferior esquerdo: Tela03
    - Canto inferior direito: Tela03 (repetido)
-3. A matriz final é 3840x2560 (4K)
+3. A matriz final é 3840x2160 (4K padrão)
 
 CONFIGURAÇÕES AVANÇADAS
 -----------------------
@@ -107,7 +107,7 @@ Versão Original (3 Outputs):
 
 Versão 4K:
 - 4 vídeos em matriz 2x2
-- Resolução: 3840x2560
+- Resolução: 3840x2160
 - 1 monitor 4K necessário
 - Tela03 é repetida na posição 4
 
