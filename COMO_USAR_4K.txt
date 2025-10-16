@@ -1,0 +1,119 @@
+========================================
+  Bijari 4K - Matriz 2x2 - Guia Completo
+========================================
+
+VISÃO GERAL
+-----------
+O Bijari 4K é uma versão especializada que cria uma matriz 2x2 de vídeos
+em uma única saída 4K (3840x2560).
+
+Layout da matriz:
+[Tela01] [Tela02]
+[Tela03] [Tela03]
+
+CARACTERÍSTICAS
+--------------
+- Resolução final: 3840x2560 (4K com aspect ratio 3:2)
+- Cada vídeo individual: 1920x1280 (Full HD adaptado)
+- Loop infinito imperceptível
+- Controle de foco automático
+- Tecla de atalho global (Ctrl+Q) para sair
+- Watchdog para manter VLC sempre em foco
+
+INSTALAÇÃO
+----------
+1. Execute: INSTALAR_4K.bat
+2. Aguarde a instalação das dependências
+3. Verifique se todos os vídeos estão presentes
+
+REQUISITOS
+----------
+- Python 3.8+ instalado
+- VLC Media Player instalado
+- FFmpeg (baixado automaticamente se necessário)
+- Vídeos: Tela01.mp4, Tela02.mp4, Tela03.mp4
+- Monitor 4K (3840x2560) ou maior
+
+USO BÁSICO
+----------
+1. Coloque os vídeos na pasta do projeto
+2. Execute: INICIAR_PRODUCAO_4K.bat
+3. O sistema criará automaticamente o vídeo combinado
+4. O VLC abrirá em modo borderless com loop infinito
+5. Para sair: Pressione Ctrl+Q
+
+MODO DESENVOLVIMENTO
+--------------------
+Para debug e logs detalhados:
+Execute: INICIAR_DESENVOLVIMENTO_4K.bat
+
+PROCESSAMENTO DE VÍDEO
+----------------------
+1. Cada vídeo de entrada é redimensionado para 1920x1280
+2. Os vídeos são organizados em matriz 2x2:
+   - Canto superior esquerdo: Tela01
+   - Canto superior direito: Tela02
+   - Canto inferior esquerdo: Tela03
+   - Canto inferior direito: Tela03 (repetido)
+3. A matriz final é 3840x2560 (4K)
+
+CONFIGURAÇÕES AVANÇADAS
+-----------------------
+Edite config_4k.py para personalizar:
+- Resoluções
+- Caminhos dos vídeos
+- Configurações do VLC
+- Tecla de atalho
+- Intervalos de monitoramento
+
+SOLUÇÃO DE PROBLEMAS
+--------------------
+
+Problema: psutil não instala
+Solução: Execute CORRIGIR_PSUTIL_4K.bat
+
+Problema: VLC não abre
+Solução: Verifique se VLC está instalado em:
+        C:\Program Files\VideoLAN\VLC\vlc.exe
+
+Problema: FFmpeg não encontrado
+Solução: O sistema baixa automaticamente, mas você pode:
+        1. Instalar via Chocolatey: choco install ffmpeg -y
+        2. Baixar manualmente: https://ffmpeg.org/download.html
+        3. Colocar ffmpeg.exe na pasta do projeto
+
+Problema: Vídeos não encontrados
+Solução: Certifique-se de que Tela01.mp4, Tela02.mp4 e Tela03.mp4
+         estão na pasta do projeto
+
+Problema: VLC não mantém foco
+Solução: Execute como administrador ou verifique as permissões
+
+ARQUIVOS IMPORTANTES
+--------------------
+- video_sync_4k.py: Script principal
+- config_4k.py: Configurações
+- INSTALAR_4K.bat: Instalação
+- INICIAR_PRODUCAO_4K.bat: Execução normal
+- INICIAR_DESENVOLVIMENTO_4K.bat: Modo debug
+- CORRIGIR_PSUTIL_4K.bat: Correção de problemas
+
+DIFERENÇAS DA VERSÃO ORIGINAL
+-----------------------------
+Versão Original (3 Outputs):
+- 3 vídeos lado a lado
+- Resolução: 5760x1080
+- 3 monitores necessários
+
+Versão 4K:
+- 4 vídeos em matriz 2x2
+- Resolução: 3840x2560
+- 1 monitor 4K necessário
+- Tela03 é repetida na posição 4
+
+SUPORTE
+-------
+Para problemas técnicos, entre em contato com o suporte.
+Inclua logs de erro e descrição detalhada do problema.
+
+========================================
