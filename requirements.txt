@@ -1,7 +1,7 @@
 # Dependências Python
 keyboard==0.13.5
 pywin32==311
-psutil==5.9.0
+psutil>=5.9.0
 
 # PRÉ-REQUISITOS EXTERNOS (não instaláveis via pip):
 # - VLC Media Player: https://www.videolan.org/vlc/
